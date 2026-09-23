@@ -3,132 +3,1319 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PIXELBHOP</title>
+
+<title>PIXELBHOP — Counter-Strike: Source</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg: #050811;
+    --card: rgba(12, 20, 35, .68);
+    --card2: rgba(16, 27, 46, .72);
+    --border: rgba(255,255,255,.09);
+    --blue: #218cff;
+    --blue2: #006eff;
+    --text: #f4f8ff;
+    --muted: #8190a8;
+    --green: #35e58b;
+}
+
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    color: white;
+    font-family: Inter, Arial, sans-serif;
+    color: var(--text);
     background:
-        radial-gradient(circle at 20% 20%, rgba(0, 120, 255, .25), transparent 35%),
-        radial-gradient(circle at 80% 80%, rgba(0, 70, 255, .20), transparent 35%),
-        #050812;
-    overflow: hidden;
+        radial-gradient(circle at 15% 10%, rgba(0,110,255,.16), transparent 30%),
+        radial-gradient(circle at 90% 25%, rgba(0,80,255,.12), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(0,110,255,.10), transparent 35%),
+        var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-.card {
-    width: min(90%, 650px);
-    padding: 55px 45px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 28px;
-    background: rgba(255,255,255,.06);
-    backdrop-filter: blur(25px);
-    box-shadow: 0 25px 80px rgba(0,0,0,.45);
+/* background glow */
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 550px;
+    height: 550px;
+    top: -250px;
+    left: -250px;
+    background: rgba(0, 120, 255, .12);
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    right: -250px;
+    bottom: -250px;
+    background: rgba(0, 90, 255, .10);
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* NAV */
+
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 76px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(5, 8, 17, .72);
+    backdrop-filter: blur(24px);
+}
+
+.nav-inner {
+    max-width: 1180px;
+    height: 100%;
+    margin: auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .logo {
-    font-size: 52px;
+    font-size: 21px;
     font-weight: 900;
-    letter-spacing: 5px;
-    margin-bottom: 10px;
+    letter-spacing: 2px;
 }
 
 .logo span {
-    color: #2997ff;
-    text-shadow: 0 0 30px rgba(41,151,255,.7);
+    color: var(--blue);
 }
 
-.subtitle {
-    color: rgba(255,255,255,.55);
-    margin-bottom: 35px;
+.nav-links {
+    display: flex;
+    gap: 30px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.server {
-    padding: 15px;
-    margin-bottom: 25px;
-    border-radius: 15px;
-    background: rgba(0,0,0,.25);
-    color: rgba(255,255,255,.7);
+.nav-links a {
+    transition: .2s;
 }
 
-.play {
-    width: 100%;
-    padding: 18px;
-    border: 0;
-    border-radius: 15px;
+.nav-links a:hover {
     color: white;
-    background: linear-gradient(135deg, #1687ff, #005bea);
-    font-size: 19px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #a9b5c7;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 14px rgba(53,229,139,.8);
+}
+
+.nav-play {
+    border: 0;
+    padding: 10px 17px;
+    border-radius: 10px;
+    color: white;
+    background: var(--blue);
     font-weight: 800;
     cursor: pointer;
-    transition: .25s;
-    box-shadow: 0 10px 35px rgba(0,110,255,.35);
+    transition: .2s;
 }
 
-.play:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 45px rgba(0,110,255,.55);
+.nav-play:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(33,140,255,.35);
 }
 
-.play:active {
-    transform: translateY(0);
+/* MAIN */
+
+.container {
+    width: min(1180px, calc(100% - 48px));
+    margin: auto;
 }
 
-.warning {
-    margin-top: 18px;
+.hero {
+    padding: 95px 0 55px;
+    text-align: center;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border: 1px solid rgba(33,140,255,.2);
+    border-radius: 999px;
+    background: rgba(33,140,255,.07);
+    color: #7dbaff;
     font-size: 12px;
-    line-height: 1.5;
-    color: rgba(255,255,255,.4);
+    font-weight: 700;
+    margin-bottom: 24px;
 }
 
-.ip {
-    color: #4ba8ff;
+.hero h1 {
+    font-size: clamp(55px, 9vw, 105px);
+    line-height: .9;
+    letter-spacing: -6px;
+    font-weight: 900;
+}
+
+.hero h1 span {
+    color: var(--blue);
+    text-shadow: 0 0 50px rgba(33,140,255,.35);
+}
+
+.hero p {
+    max-width: 600px;
+    margin: 25px auto 32px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.primary {
+    border: 0;
+    padding: 15px 28px;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient(135deg, #218cff, #0067e8);
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 15px 45px rgba(0,110,255,.22);
+    transition: .25s;
+}
+
+.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 55px rgba(0,110,255,.35);
+}
+
+.secondary {
+    padding: 15px 28px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: #b9c6d9;
+    background: rgba(255,255,255,.035);
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.secondary:hover {
+    background: rgba(255,255,255,.07);
+}
+
+/* SERVER */
+
+.server-card {
+    position: relative;
+    overflow: hidden;
+    padding: 27px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--card);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 25px 80px rgba(0,0,0,.25);
+}
+
+.server-card::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    right: -120px;
+    top: -120px;
+    background: rgba(33,140,255,.13);
+    filter: blur(70px);
+}
+
+.server-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.server-title {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.server-ip {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.online {
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.stat {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: rgba(255,255,255,.025);
+}
+
+.stat-number {
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.stat-name {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* SECTIONS */
+
+section {
+    padding: 80px 0 0;
+}
+
+.section-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.section-subtitle {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* GRID */
+
+.grid {
+    display: grid;
+    grid-template-columns: 1.35fr .65fr;
+    gap: 18px;
+}
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--card);
+    backdrop-filter: blur(25px);
+    overflow: hidden;
+}
+
+/* RANKING */
+
+.tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab {
+    border: 0;
+    padding: 9px 13px;
+    border-radius: 9px;
+    color: var(--muted);
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tab.active,
+.tab:hover {
+    color: white;
+    background: rgba(33,140,255,.14);
+}
+
+.player {
+    display: grid;
+    grid-template-columns: 45px 1fr 100px 90px;
+    align-items: center;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+    font-size: 13px;
+}
+
+.player:last-child {
+    border-bottom: 0;
+}
+
+.place {
+    color: var(--muted);
+    font-weight: 800;
+}
+
+.player-name {
+    font-weight: 700;
+}
+
+.player-rank {
+    color: #75b8ff;
+    font-size: 11px;
+}
+
+.player-score {
+    text-align: right;
+    color: var(--muted);
+}
+
+.player-time {
+    text-align: right;
+    font-weight: 700;
+}
+
+/* MAPS */
+
+.map-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 18px;
+}
+
+.map {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: rgba(255,255,255,.025);
+    transition: .2s;
+}
+
+.map:hover {
+    transform: translateY(-2px);
+    border-color: rgba(33,140,255,.35);
+    background: rgba(33,140,255,.06);
+}
+
+.map-name {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.map-plays {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* STAFF */
+
+.staff {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.staff-card {
+    padding: 22px;
+}
+
+.avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    color: white;
+    background: linear-gradient(135deg, #1687ff, #0046ad);
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.staff-name {
+    font-weight: 800;
+}
+
+.staff-role {
+    margin-top: 5px;
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.staff-links {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.staff-links a {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.staff-links a:hover {
+    color: white;
+}
+
+/* FORUM */
+
+.forum-list {
+    padding: 6px 18px;
+}
+
+.topic {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 17px 0;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.topic:last-child {
+    border-bottom: 0;
+}
+
+.topic-title {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.topic-meta {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.topic-replies {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* SUPPORT */
+
+.support {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 14px;
+}
+
+.support-card {
+    padding: 25px;
+}
+
+.support-icon {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.support-title {
+    font-weight: 800;
+}
+
+.support-text {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* FOOTER */
+
+footer {
+    margin-top: 100px;
+    padding: 35px 0;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+    .nav-links {
+        display: none;
+    }
+
+    .container {
+        width: min(100% - 28px, 1180px);
+    }
+
+    .hero {
+        padding-top: 65px;
+    }
+
+    .hero h1 {
+        letter-spacing: -3px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .support {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 520px) {
+
+    .status {
+        display: none;
+    }
+
+    .hero h1 {
+        font-size: 54px;
+    }
+
+    .server-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .player {
+        grid-template-columns: 35px 1fr 70px;
+    }
+
+    .player-score {
+        display: none;
+    }
+
+    .staff {
+        grid-template-columns: 1fr;
+    }
+
+    .map-list {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<!-- NAVIGATION -->
 
-    <div class="logo">
+<nav class="nav">
+    <div class="nav-inner">
+
+        <a class="logo" href="#">
+            PIXEL<span>BHOP</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="#server">Сервер</a>
+            <a href="#rating">Ранги</a>
+            <a href="#maps">Карты</a>
+            <a href="#forum">Форум</a>
+            <a href="#support">Поддержка</a>
+        </div>
+
+        <div class="nav-right">
+            <div class="status">
+                <span class="status-dot"></span>
+                ONLINE
+            </div>
+
+            <button class="nav-play" onclick="playServer()">
+                ИГРАТЬ
+            </button>
+        </div>
+
+    </div>
+</nav>
+
+
+<main>
+
+<!-- HERO -->
+
+<div class="container">
+
+<section class="hero">
+
+    <div class="badge">
+        ● COUNTER-STRIKE: SOURCE
+    </div>
+
+    <h1>
         PIXEL<span>BHOP</span>
+    </h1>
+
+    <p>
+        Современный BunnyHop сервер для Counter-Strike: Source.
+        Прыгай, улучшай свои результаты и поднимайся в рейтинге.
+    </p>
+
+    <div class="hero-buttons">
+
+        <button class="primary" onclick="playServer()">
+            ИГРАТЬ
+        </button>
+
+        <button class="secondary" onclick="copyIP()">
+            СКОПИРОВАТЬ IP
+        </button>
+
     </div>
 
-    <div class="subtitle">
-        Counter-Strike: Source · BunnyHop
+</section>
+
+
+<!-- SERVER -->
+
+<section id="server">
+
+    <div class="server-card">
+
+        <div class="server-top">
+
+            <div>
+                <div class="server-title">
+                    PIXELBHOP · BUNNYHOP
+                </div>
+
+                <div class="server-ip">
+                    46.174.50.82:27015
+                </div>
+            </div>
+
+            <div class="online">
+                ● СЕРВЕР ОНЛАЙН
+            </div>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-number">12/32</div>
+                <div class="stat-name">Онлайн</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">100</div>
+                <div class="stat-name">Tickrate</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">247</div>
+                <div class="stat-name">Карт</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">18</div>
+                <div class="stat-name">Рангов</div>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="server">
-        SERVER<br>
-        <span class="ip">46.174.50.82:27015</span>
+</section>
+
+
+<!-- RATING -->
+
+<section id="rating">
+
+    <div class="section-head">
+
+        <div>
+            <div class="section-title">
+                Рейтинг игроков
+            </div>
+
+            <div class="section-subtitle">
+                Лучшие игроки PixelBhop
+            </div>
+        </div>
+
     </div>
 
-    <button class="play" onclick="play()">
-        ИГРАТЬ
-    </button>
+    <div class="card">
 
-    <div class="warning">
-        Перед запуском убедись, что Counter-Strike: Source установлена.<br>
-        Рекомендуемые параметры запуска: <b>-novid -console -insecure</b>
+        <div class="tabs">
+
+            <button class="tab active">
+                24 ЧАСА
+            </button>
+
+            <button class="tab">
+                НЕДЕЛЯ
+            </button>
+
+            <button class="tab">
+                МЕСЯЦ
+            </button>
+
+            <button class="tab">
+                ВСЁ ВРЕМЯ
+            </button>
+
+        </div>
+
+
+        <div class="player">
+
+            <div class="place">#1</div>
+
+            <div>
+                <div class="player-name">PlayerOne</div>
+                <div class="player-rank">MASTER BHOPER</div>
+            </div>
+
+            <div class="player-score">12 840</div>
+
+            <div class="player-time">42.18s</div>
+
+        </div>
+
+
+        <div class="player">
+
+            <div class="place">#2</div>
+
+            <div>
+                <div class="player-name">SpeedRunner</div>
+                <div class="player-rank">DIAMOND</div>
+            </div>
+
+            <div class="player-score">11 920</div>
+
+            <div class="player-time">43.51s</div>
+
+        </div>
+
+
+        <div class="player">
+
+            <div class="place">#3</div>
+
+            <div>
+                <div class="player-name">PixelGod</div>
+                <div class="player-rank">DIAMOND</div>
+            </div>
+
+            <div class="player-score">11 440</div>
+
+            <div class="player-time">44.02s</div>
+
+        </div>
+
+
+        <div class="player">
+
+            <div class="place">#4</div>
+
+            <div>
+                <div class="player-name">BHopMaster</div>
+                <div class="player-rank">PLATINUM</div>
+            </div>
+
+            <div class="player-score">10 870</div>
+
+            <div class="player-time">45.16s</div>
+
+        </div>
+
     </div>
+
+</section>
+
+
+<!-- MAPS -->
+
+<section id="maps">
+
+    <div class="section-head">
+
+        <div>
+            <div class="section-title">
+                Карты
+            </div>
+
+            <div class="section-subtitle">
+                247 карт доступно на сервере
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="section-title" style="padding:20px 20px 0;font-size:18px;">
+                Часто играют
+            </div>
+
+            <div class="map-list">
+
+                <div class="map">
+                    <div class="map-name">bhop_arcane</div>
+                    <div class="map-plays">1 482 прохождения</div>
+                </div>
+
+                <div class="map">
+                    <div class="map-name">bhop_easy</div>
+                    <div class="map-plays">1 203 прохождения</div>
+                </div>
+
+                <div class="map">
+                    <div class="map-name">bhop_lj</div>
+                    <div class="map-plays">987 прохождений</div>
+                </div>
+
+                <div class="map">
+                    <div class="map-name">bhop_kzpro</div>
+                    <div class="map-plays">864 прохождения</div>
+                </div>
+
+                <div class="map">
+                    <div class="map-name">bhop_space</div>
+                    <div class="map-plays">731 прохождение</div>
+                </div>
+
+                <div class="map">
+                    <div class="map-name">bhop_celestial</div>
+                    <div class="map-plays">622 прохождения</div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card" style="padding:24px;">
+
+            <div class="section-title" style="font-size:18px;">
+                Статистика
+            </div>
+
+            <div style="margin-top:25px;">
+
+                <div style="color:#8190a8;font-size:12px;">
+                    Всего карт
+                </div>
+
+                <div style="font-size:34px;font-weight:900;margin-top:5px;">
+                    247
+                </div>
+
+            </div>
+
+            <div style="margin-top:25px;">
+
+                <div style="color:#8190a8;font-size:12px;">
+                    Лучший результат
+                </div>
+
+                <div style="font-size:28px;font-weight:900;margin-top:5px;">
+                    38.21s
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- STAFF -->
+
+<section>
+
+    <div class="section-head">
+
+        <div>
+            <div class="section-title">
+                Администрация
+            </div>
+
+            <div class="section-subtitle">
+                Люди, которые развивают PixelBhop
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="staff">
+
+        <div class="card staff-card">
+
+            <div class="avatar">
+                GA
+            </div>
+
+            <div class="staff-name">
+                Главный администратор
+            </div>
+
+            <div class="staff-role">
+                ГА
+            </div>
+
+            <div class="staff-links">
+
+                <a href="#" target="_blank">
+                    Telegram
+                </a>
+
+                <a href="#" target="_blank">
+                    Steam
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="card staff-card">
+
+            <div class="avatar">
+                PB
+            </div>
+
+            <div class="staff-name">
+                Создатель проекта
+            </div>
+
+            <div class="staff-role">
+                OWNER
+            </div>
+
+            <div class="staff-links">
+
+                <a href="#" target="_blank">
+                    Telegram
+                </a>
+
+                <a href="#" target="_blank">
+                    Steam
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FORUM -->
+
+<section id="forum">
+
+    <div class="section-head">
+
+        <div>
+            <div class="section-title">
+                Форум
+            </div>
+
+            <div class="section-subtitle">
+                Общение игроков и жизнь проекта
+            </div>
+        </div>
+
+        <button class="secondary">
+            ОТКРЫТЬ ФОРУМ
+        </button>
+
+    </div>
+
+
+    <div class="card forum-list">
+
+        <div class="topic">
+
+            <div>
+                <div class="topic-title">
+                    Обсуждение новых карт
+                </div>
+
+                <div class="topic-meta">
+                    PlayerOne · 12 минут назад
+                </div>
+            </div>
+
+            <div class="topic-replies">
+                18 ответов
+            </div>
+
+        </div>
+
+
+        <div class="topic">
+
+            <div>
+                <div class="topic-title">
+                    Предложения по серверу
+                </div>
+
+                <div class="topic-meta">
+                    SpeedRunner · сегодня
+                </div>
+            </div>
+
+            <div class="topic-replies">
+                7 ответов
+            </div>
+
+        </div>
+
+
+        <div class="topic">
+
+            <div>
+                <div class="topic-title">
+                    Нашли баг на карте?
+                </div>
+
+                <div class="topic-meta">
+                    PixelGod · вчера
+                </div>
+            </div>
+
+            <div class="topic-replies">
+                4 ответа
+            </div>
+
+        </div>
+
+
+        <div class="topic">
+
+            <div>
+                <div class="topic-title">
+                    Жалобы на игроков
+                </div>
+
+                <div class="topic-meta">
+                    BhopMaster · вчера
+                </div>
+            </div>
+
+            <div class="topic-replies">
+                3 ответа
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SUPPORT -->
+
+<section id="support">
+
+    <div class="section-head">
+
+        <div>
+            <div class="section-title">
+                Поддержка
+            </div>
+
+            <div class="section-subtitle">
+                Не нашли ответ? Мы поможем.
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="support">
+
+        <div class="card support-card">
+
+            <div class="support-icon">
+                ?
+            </div>
+
+            <div class="support-title">
+                Частые вопросы
+            </div>
+
+            <div class="support-text">
+                Ответы на самые популярные вопросы игроков.
+            </div>
+
+        </div>
+
+
+        <div class="card support-card">
+
+            <div class="support-icon">
+                !
+            </div>
+
+            <div class="support-title">
+                Сообщить о проблеме
+            </div>
+
+            <div class="support-text">
+                Нашли ошибку или проблему на сервере?
+                Сообщите администрации.
+            </div>
+
+        </div>
+
+
+        <div class="card support-card">
+
+            <div class="support-icon">
+                @
+            </div>
+
+            <div class="support-title">
+                Связаться с нами
+            </div>
+
+            <div class="support-text">
+                Получите помощь через Telegram или форум проекта.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
 </div>
 
+</main>
+
+
+<footer>
+
+    <div class="container footer-inner">
+
+        <div>
+            © 2026 PIXELBHOP
+        </div>
+
+        <div>
+            Counter-Strike: Source · BunnyHop
+        </div>
+
+    </div>
+
+</footer>
+
+
 <script>
-function play() {
-    window.location.href = "steam://connect/46.174.50.82:27015";
+
+const SERVER_IP = "46.174.50.82:27015";
+
+function playServer() {
+    window.location.href = "steam://connect/" + SERVER_IP;
 }
+
+function copyIP() {
+
+    navigator.clipboard.writeText(SERVER_IP);
+
+    alert("IP сервера скопирован: " + SERVER_IP);
+}
+
+
+/* рейтинг */
+
+document.querySelectorAll(".tab").forEach(tab => {
+
+    tab.addEventListener("click", () => {
+
+        document.querySelectorAll(".tab").forEach(t => {
+            t.classList.remove("active");
+        });
+
+        tab.classList.add("active");
+
+    });
+
+});
+
 </script>
 
 </body>
