@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIXELBHOP</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(0, 120, 255, .25), transparent 35%),
+        radial-gradient(circle at 80% 80%, rgba(0, 70, 255, .20), transparent 35%),
+        #050812;
+    overflow: hidden;
+}
+
+.card {
+    width: min(90%, 650px);
+    padding: 55px 45px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 28px;
+    background: rgba(255,255,255,.06);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 25px 80px rgba(0,0,0,.45);
+}
+
+.logo {
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+}
+
+.logo span {
+    color: #2997ff;
+    text-shadow: 0 0 30px rgba(41,151,255,.7);
+}
+
+.subtitle {
+    color: rgba(255,255,255,.55);
+    margin-bottom: 35px;
+}
+
+.server {
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    background: rgba(0,0,0,.25);
+    color: rgba(255,255,255,.7);
+}
+
+.play {
+    width: 100%;
+    padding: 18px;
+    border: 0;
+    border-radius: 15px;
+    color: white;
+    background: linear-gradient(135deg, #1687ff, #005bea);
+    font-size: 19px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .25s;
+    box-shadow: 0 10px 35px rgba(0,110,255,.35);
+}
+
+.play:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 45px rgba(0,110,255,.55);
+}
+
+.play:active {
+    transform: translateY(0);
+}
+
+.warning {
+    margin-top: 18px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255,255,255,.4);
+}
+
+.ip {
+    color: #4ba8ff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        PIXEL<span>BHOP</span>
+    </div>
+
+    <div class="subtitle">
+        Counter-Strike: Source · BunnyHop
+    </div>
+
+    <div class="server">
+        SERVER<br>
+        <span class="ip">46.174.50.82:27015</span>
+    </div>
+
+    <button class="play" onclick="play()">
+        ИГРАТЬ
+    </button>
+
+    <div class="warning">
+        Перед запуском убедись, что Counter-Strike: Source установлена.<br>
+        Рекомендуемые параметры запуска: <b>-novid -console -insecure</b>
+    </div>
+
+</div>
+
+<script>
+function play() {
+    window.location.href = "steam://connect/46.174.50.82:27015";
+}
+</script>
+
+</body>
+</html>
