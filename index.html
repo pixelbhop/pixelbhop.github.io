@@ -3,6 +3,1445 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PIXELBHOP — CS:S BunnyHop</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg: #050914;
+    --panel: rgba(12, 22, 40, .72);
+    --panel2: rgba(16, 29, 51, .65);
+    --line: rgba(120,180,255,.13);
+    --blue: #49a8ff;
+    --blue2: #227cff;
+    --text: #f4f8ff;
+    --muted: #8190a7;
+    --green: #46e89a;
+    --red: #ff6178;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 10% 0%, rgba(0,130,255,.19), transparent 31%),
+        radial-gradient(circle at 90% 10%, rgba(66,105,255,.13), transparent 30%),
+        linear-gradient(180deg,#050914,#07101d 55%,#050914);
+    font-family: Inter, Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: linear-gradient(to bottom,black,transparent 75%);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font: inherit;
+}
+
+.container {
+    width: min(1180px,calc(100% - 36px));
+    margin: auto;
+}
+
+/* NAV */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 74px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(5,9,20,.72);
+    backdrop-filter: blur(22px);
+}
+
+.nav {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.logo b {
+    color: var(--blue);
+}
+
+.nav-links {
+    display: flex;
+    gap: 27px;
+    color: #8b9ab0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.nav-links a {
+    transition: .2s;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+/* HERO */
+
+.hero {
+    padding: 105px 0 60px;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 13px;
+    border: 1px solid rgba(73,168,255,.2);
+    border-radius: 999px;
+    background: rgba(73,168,255,.07);
+    color: #8bc7ff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 15px var(--green);
+}
+
+h1 {
+    margin-top: 22px;
+    max-width: 900px;
+    font-size: clamp(54px,9vw,105px);
+    line-height: .88;
+    letter-spacing: -6px;
+    font-weight: 900;
+}
+
+h1 span {
+    color: var(--blue);
+}
+
+.hero-text {
+    max-width: 650px;
+    margin-top: 28px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+/* GLASS */
+
+.glass {
+    border: 1px solid var(--line);
+    background: linear-gradient(
+        135deg,
+        rgba(16,30,52,.82),
+        rgba(8,16,29,.72)
+    );
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.3),
+        inset 0 1px rgba(255,255,255,.025);
+    backdrop-filter: blur(20px);
+}
+
+/* SERVER */
+
+.server {
+    margin-top: 48px;
+    padding: 27px;
+    border-radius: 25px;
+}
+
+.server-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.server-title {
+    font-size: 25px;
+    font-weight: 850;
+}
+
+.ip {
+    margin-top: 7px;
+    color: #75859d;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.ip:hover {
+    color: var(--blue);
+}
+
+.live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.stat {
+    padding: 19px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.027);
+    border: 1px solid rgba(255,255,255,.045);
+}
+
+.stat small {
+    display: block;
+    color: #64738a;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: .6px;
+}
+
+.stat strong {
+    display: block;
+    margin-top: 9px;
+    font-size: 20px;
+}
+
+.play {
+    width: 100%;
+    margin-top: 17px;
+    border: 0;
+    padding: 16px;
+    border-radius: 15px;
+    color: white;
+    background: linear-gradient(135deg,var(--blue2),#389dff);
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 12px 35px rgba(34,124,255,.22);
+    transition: .2s;
+}
+
+.play:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 17px 45px rgba(34,124,255,.35);
+}
+
+.warning {
+    margin-top: 11px;
+    color: #65738a;
+    text-align: center;
+    font-size: 10px;
+}
+
+/* SECTIONS */
+
+section {
+    padding: 65px 0;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 20px;
+}
+
+.section-title {
+    font-size: 29px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.section-subtitle {
+    margin-top: 7px;
+    color: #68778d;
+    font-size: 13px;
+}
+
+/* PROFILES */
+
+.profiles {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.profile {
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    border-radius: 20px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background:
+        linear-gradient(135deg,#168cff,#4c50ff);
+    font-size: 21px;
+    font-weight: 900;
+    box-shadow: 0 12px 35px rgba(25,112,255,.25);
+}
+
+.role {
+    color: #58b0ff;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .6px;
+}
+
+.name {
+    margin-top: 5px;
+    font-size: 17px;
+    font-weight: 850;
+}
+
+.steam {
+    display: inline-block;
+    margin-top: 7px;
+    color: #75849b;
+    font-size: 11px;
+}
+
+.steam:hover {
+    color: white;
+}
+
+/* INFO */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.card {
+    padding: 23px;
+    border-radius: 20px;
+}
+
+.card-icon {
+    font-size: 22px;
+}
+
+.card h3 {
+    margin-top: 14px;
+    font-size: 16px;
+}
+
+.card p {
+    margin-top: 8px;
+    color: #738198;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+/* FORUM */
+
+.forum {
+    margin-top: 25px;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.topic {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 23px;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.topic:last-child {
+    border-bottom: 0;
+}
+
+.topic:hover {
+    background: rgba(255,255,255,.025);
+}
+
+.topic-title {
+    font-weight: 750;
+    font-size: 13px;
+}
+
+.topic-meta {
+    margin-top: 6px;
+    color: #65738a;
+    font-size: 11px;
+}
+
+.replies {
+    color: #697a91;
+    font-size: 11px;
+}
+
+/* ADMIN */
+
+.admin-box {
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.admin-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.admin-title {
+    font-size: 16px;
+    font-weight: 850;
+}
+
+.admin-desc {
+    margin-top: 6px;
+    color: #6c7b91;
+    font-size: 12px;
+}
+
+.admin-button {
+    border: 1px solid rgba(73,168,255,.2);
+    border-radius: 12px;
+    padding: 11px 15px;
+    color: #8bc7ff;
+    background: rgba(73,168,255,.07);
+    cursor: pointer;
+}
+
+.admin-button:hover {
+    background: rgba(73,168,255,.14);
+}
+
+/* ADMIN MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,.68);
+    backdrop-filter: blur(12px);
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-window {
+    width: min(560px,100%);
+    padding: 27px;
+    border-radius: 23px;
+}
+
+.modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close {
+    border: 0;
+    background: transparent;
+    color: #718097;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 11px;
+    margin-top: 22px;
+}
+
+.admin-action {
+    padding: 17px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 14px;
+    background: rgba(255,255,255,.025);
+    color: #cbd5e4;
+    cursor: pointer;
+    text-align: left;
+}
+
+.admin-action:hover {
+    border-color: rgba(73,168,255,.3);
+    background: rgba(73,168,255,.06);
+}
+
+.admin-status {
+    margin-top: 17px;
+    padding: 13px;
+    border-radius: 12px;
+    color: #728198;
+    background: rgba(255,255,255,.025);
+    font-size: 11px;
+}
+
+/* FOOTER */
+
+footer {
+    margin-top: 30px;
+    padding: 45px 0 70px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    color: #59677b;
+    font-size: 11px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.telegram {
+    color: #50aaff;
+}
+
+/* MOBILE */
+
+@media(max-width:800px) {
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero {
+        padding-top: 65px;
+    }
+
+    h1 {
+        letter-spacing: -4px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .profiles,
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .server-head,
+    .admin-row,
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+<div class="container nav">
+
+    <a class="logo" href="#">
+        PIXEL<b>BHOP</b>
+    </a>
+
+    <div class="nav-links">
+        <a href="#server">Сервер</a>
+        <a href="#profiles">Профили</a>
+        <a href="#forum">Форум</a>
+        <a href="#contacts">Контакты</a>
+        <a href="#admin">Админка</a>
+    </div>
+
+</div>
+</nav>
+
+
+<main>
+
+<section class="hero">
+<div class="container">
+
+    <div class="pill">
+        <span class="pulse"></span>
+        COUNTER-STRIKE: SOURCE · BUNNYHOP
+    </div>
+
+    <h1>
+        PIXEL<span>BHOP</span>
+    </h1>
+
+    <p class="hero-text">
+        Официальный портал сервера PIXELBHOP.
+        Здесь отображается состояние сервера,
+        профили игроков, форум, контакты и
+        управление проектом.
+    </p>
+
+
+    <!-- SERVER -->
+
+    <div id="server" class="glass server">
+
+        <div class="server-head">
+
+            <div>
+                <div class="server-title">
+                    PIXELBHOP
+                </div>
+
+                <div
+                    class="ip"
+                    onclick="copyIP()"
+                    title="Нажми, чтобы скопировать"
+                >
+                    46.174.50.82:27015 · нажми чтобы скопировать
+                </div>
+            </div>
+
+            <div class="live">
+                <span class="pulse"></span>
+                <span id="serverStatus">
+                    LIVE
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="stats">
+
+            <div class="stat">
+                <small>Онлайн</small>
+                <strong id="online">—</strong>
+            </div>
+
+            <div class="stat">
+                <small>Карта</small>
+                <strong id="map">—</strong>
+            </div>
+
+            <div class="stat">
+                <small>Пинг</small>
+                <strong id="ping">—</strong>
+            </div>
+
+            <div class="stat">
+                <small>Версия</small>
+                <strong id="version">—</strong>
+            </div>
+
+        </div>
+
+
+        <button class="play" onclick="connectServer()">
+            ИГРАТЬ
+        </button>
+
+        <div class="warning">
+            Рекомендуемые параметры запуска:
+            <b>-novid -console -insecure</b>
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+
+<!-- PROFILES -->
+
+<section id="profiles">
+<div class="container">
+
+    <div class="section-title">
+        Профили
+    </div>
+
+    <div class="section-subtitle">
+        Люди проекта и их Steam-профили.
+    </div>
+
+
+    <div class="profiles">
+
+        <div class="glass profile">
+
+            <div class="avatar">
+                GA
+            </div>
+
+            <div>
+                <div class="role">
+                    OWNER · ГЛАВНЫЙ АДМИНИСТРАТОР
+                </div>
+
+                <div class="name">
+                    GA
+                </div>
+
+                <a
+                    class="steam"
+                    href="https://steamcommunity.com/id/whiteIist/"
+                    target="_blank"
+                >
+                    Steam →
+                </a>
+            </div>
+
+        </div>
+
+
+        <div class="glass profile">
+
+            <div class="avatar">
+                PB
+            </div>
+
+            <div>
+                <div class="role">
+                    OWNER · СОЗДАТЕЛЬ
+                </div>
+
+                <div class="name">
+                    Создатель PIXELBHOP
+                </div>
+
+                <a
+                    class="steam"
+                    href="https://steamcommunity.com/id/bababooooom"
+                    target="_blank"
+                >
+                    Steam →
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+
+<!-- INFORMATION -->
+
+<section>
+<div class="container">
+
+    <div class="section-title">
+        PIXELBHOP
+    </div>
+
+    <div class="section-subtitle">
+        Всё необходимое в одном месте.
+    </div>
+
+
+    <div class="cards">
+
+        <div class="glass card">
+            <div class="card-icon">◉</div>
+
+            <h3>
+                Live-сервер
+            </h3>
+
+            <p>
+                Онлайн, карта, версия и ping
+                должны приходить из реального
+                источника данных.
+            </p>
+        </div>
+
+
+        <div class="glass card">
+            <div class="card-icon">◈</div>
+
+            <h3>
+                Профили
+            </h3>
+
+            <p>
+                Steam-профили игроков,
+                статистика и информация
+                о пользователях проекта.
+            </p>
+        </div>
+
+
+        <div class="glass card">
+            <div class="card-icon">⌁</div>
+
+            <h3>
+                Сообщество
+            </h3>
+
+            <p>
+                Новости, форум и официальный
+                Telegram проекта.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+
+<!-- FORUM -->
+
+<section id="forum">
+<div class="container">
+
+    <div class="section-title">
+        Форум
+    </div>
+
+    <div class="section-subtitle">
+        Последние обсуждения проекта.
+    </div>
+
+
+    <div class="glass forum" id="forumList">
+
+        <div class="topic">
+            <div>
+                <div class="topic-title">
+                    Форум
+                </div>
+
+                <div class="topic-meta">
+                    Реальные темы подключаются через API
+                </div>
+            </div>
+
+            <div class="replies">
+                —
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+
+<!-- CONTACTS -->
+
+<section id="contacts">
+<div class="container">
+
+    <div class="section-title">
+        Контакты
+    </div>
+
+    <div class="section-subtitle">
+        Только официальные контакты проекта.
+    </div>
+
+
+    <div class="cards">
+
+        <a
+            class="glass card"
+            href="https://t.me/PIXELPROJECTCS"
+            target="_blank"
+        >
+            <div class="card-icon">✈</div>
+
+            <h3>
+                Telegram
+            </h3>
+
+            <p>
+                Официальный Telegram
+                PIXEL PROJECT.
+            </p>
+        </a>
+
+
+        <div class="glass card">
+            <div class="card-icon">◎</div>
+
+            <h3>
+                Сервер
+            </h3>
+
+            <p>
+                46.174.50.82:27015
+            </p>
+        </div>
+
+
+        <a
+            class="glass card"
+            href="https://steamcommunity.com/id/whiteIist/"
+            target="_blank"
+        >
+            <div class="card-icon">S</div>
+
+            <h3>
+                Steam
+            </h3>
+
+            <p>
+                Профиль главного администратора.
+            </p>
+        </a>
+
+    </div>
+
+</div>
+</section>
+
+
+<!-- ADMIN -->
+
+<section id="admin">
+<div class="container">
+
+    <div class="section-title">
+        Админ-панель
+    </div>
+
+    <div class="section-subtitle">
+        Управление проектом.
+    </div>
+
+
+    <div class="glass admin-box">
+
+        <div class="admin-row">
+
+            <div>
+                <div class="admin-title">
+                    Панель администратора
+                </div>
+
+                <div class="admin-desc">
+                    Управление игроками, форумом,
+                    профилями и проектом.
+                </div>
+            </div>
+
+            <button
+                class="admin-button"
+                onclick="openAdmin()"
+            >
+                Открыть панель
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+</main>
+
+
+<footer>
+<div class="container footer">
+
+    <div>
+        © PIXELBHOP · Counter-Strike: Source
+    </div>
+
+    <a
+        class="telegram"
+        href="https://t.me/PIXELPROJECTCS"
+        target="_blank"
+    >
+        @PIXELPROJECTCS
+    </a>
+
+</div>
+</footer>
+
+
+<!-- ADMIN MODAL -->
+
+<div class="modal" id="adminModal">
+
+    <div class="glass modal-window">
+
+        <div class="modal-head">
+
+            <div class="section-title">
+                Админ-панель
+            </div>
+
+            <button
+                class="close"
+                onclick="closeAdmin()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="admin-grid">
+
+            <button
+                class="admin-action"
+                onclick="adminAction('Игроки')"
+            >
+                👥 Игроки
+            </button>
+
+            <button
+                class="admin-action"
+                onclick="adminAction('Баны')"
+            >
+                ⛔ Баны
+            </button>
+
+            <button
+                class="admin-action"
+                onclick="adminAction('Профили')"
+            >
+                ◉ Профили
+            </button>
+
+            <button
+                class="admin-action"
+                onclick="adminAction('Форум')"
+            >
+                💬 Форум
+            </button>
+
+            <button
+                class="admin-action"
+                onclick="adminAction('Администраторы')"
+            >
+                ★ Администраторы
+            </button>
+
+            <button
+                class="admin-action"
+                onclick="adminAction('Настройки')"
+            >
+                ⚙ Настройки
+            </button>
+
+        </div>
+
+
+        <div
+            class="admin-status"
+            id="adminStatus"
+        >
+            Авторизация администратора
+            должна выполняться сервером.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/*
+=====================================================
+ PIXELBHOP
+=====================================================
+
+ ВАЖНО:
+
+ Это единый frontend-файл.
+
+ GitHub Pages отдаёт HTML/CSS/JS,
+ но не запускает Node/PHP/Python на сервере.
+ Поэтому реальный live CS:S query нельзя
+ безопасно выполнить только этим HTML.
+
+ Когда появится API, меняется только API_URL.
+
+=====================================================
+*/
+
+
+const SERVER_IP = "46.174.50.82:27015";
+
+
+/*
+ Сейчас пусто специально.
+
+ Например потом:
+
+ const API_URL = "https://api.pixelbhop.ru";
+
+ Тогда сайт начнёт брать реальные данные
+ с этого API.
+*/
+
+const API_URL = "";
+
+
+/* ИГРАТЬ */
+
+function connectServer() {
+
+    window.location.href =
+        "steam://connect/" + SERVER_IP;
+
+}
+
+
+/* КОПИРОВАТЬ IP */
+
+async function copyIP() {
+
+    try {
+
+        await navigator.clipboard.writeText(
+            SERVER_IP
+        );
+
+        alert(
+            "IP скопирован: " + SERVER_IP
+        );
+
+    } catch {
+
+        prompt(
+            "Скопируй IP:",
+            SERVER_IP
+        );
+
+    }
+
+}
+
+
+/* LIVE SERVER */
+
+async function loadServer() {
+
+    /*
+     Пока API не подключён,
+     НЕ рисуем фейковые цифры.
+    */
+
+    if (!API_URL) {
+
+        document.getElementById("online").textContent = "—";
+        document.getElementById("map").textContent = "—";
+        document.getElementById("ping").textContent = "—";
+        document.getElementById("version").textContent = "—";
+
+        document.getElementById("serverStatus")
+            .textContent = "LIVE DATA";
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            API_URL + "/api/server",
+            {
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok)
+            throw new Error();
+
+
+        const data =
+            await response.json();
+
+
+        document.getElementById("online")
+            .textContent =
+            `${data.players}/${data.maxPlayers}`;
+
+
+        document.getElementById("map")
+            .textContent =
+            data.map || "—";
+
+
+        document.getElementById("ping")
+            .textContent =
+            data.ping != null
+                ? `${data.ping} ms`
+                : "—";
+
+
+        document.getElementById("version")
+            .textContent =
+            data.version || "—";
+
+
+        document.getElementById("serverStatus")
+            .textContent =
+            data.online
+                ? "ONLINE"
+                : "OFFLINE";
+
+    }
+
+    catch {
+
+        document.getElementById("online").textContent = "—";
+        document.getElementById("map").textContent = "—";
+        document.getElementById("ping").textContent = "—";
+        document.getElementById("version").textContent = "—";
+
+        document.getElementById("serverStatus")
+            .textContent = "OFFLINE";
+    }
+
+}
+
+
+/* FORUM */
+
+async function loadForum() {
+
+    const box =
+        document.getElementById("forumList");
+
+
+    if (!API_URL) {
+
+        box.innerHTML = `
+            <div class="topic">
+                <div>
+                    <div class="topic-title">
+                        Форум
+                    </div>
+
+                    <div class="topic-meta">
+                        Подключение форума ожидает API
+                    </div>
+                </div>
+
+                <div class="replies">
+                    —
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/api/forum",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        const topics =
+            await response.json();
+
+
+        if (!topics.length) {
+
+            box.innerHTML = `
+                <div class="topic">
+                    <div>
+                        <div class="topic-title">
+                            Пока нет тем
+                        </div>
+
+                        <div class="topic-meta">
+                            Создай первую тему.
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        box.innerHTML =
+            topics.map(topic => `
+
+                <a
+                    class="topic"
+                    href="${safe(topic.url || "#")}"
+                >
+
+                    <div>
+
+                        <div class="topic-title">
+                            ${safe(topic.title)}
+                        </div>
+
+                        <div class="topic-meta">
+                            ${safe(topic.author || "Игрок")}
+                            ·
+                            ${safe(topic.date || "")}
+                        </div>
+
+                    </div>
+
+                    <div class="replies">
+                        ${Number(topic.replies || 0)}
+                    </div>
+
+                </a>
+
+            `).join("");
+
+    }
+
+    catch {
+
+        box.innerHTML = `
+            <div class="topic">
+                <div>
+                    <div class="topic-title">
+                        Форум временно недоступен
+                    </div>
+                </div>
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* ADMIN */
+
+function openAdmin() {
+
+    document
+        .getElementById("adminModal")
+        .classList.add("show");
+
+}
+
+
+function closeAdmin() {
+
+    document
+        .getElementById("adminModal")
+        .classList.remove("show");
+
+}
+
+
+function adminAction(name) {
+
+    document
+        .getElementById("adminStatus")
+        .textContent =
+        name +
+        ": функция будет доступна после подключения авторизации.";
+
+}
+
+
+/* SECURITY */
+
+function safe(value) {
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* START */
+
+loadServer();
+loadForum();
+
+
+/*
+ Обновление live-данных.
+*/
+
+setInterval(
+    loadServer,
+    15000
+);
+
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PIXELBHOP — Counter-Strike: Source</title>
 
 <style>
